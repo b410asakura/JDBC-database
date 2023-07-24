@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 public class ShowTimeDaoImpl implements ShowTimeDao {
     private Connection connection = JdbcConfig.getConnection();
@@ -120,6 +121,40 @@ public class ShowTimeDaoImpl implements ShowTimeDao {
 
     @Override
     public List<Map<Theatre, List<Movie>>> getMoviesGroupByTheater() {
+//        List<Movie> movies = new ArrayList<>();
+//        Theatre theatre = new Theatre();
+//        Map<Theatre, List<Movie>> map = new HashMap<>();
+//        List<Map<Theatre, List<Movie>>> list = new ArrayList<>();
+//        try (
+//                Statement statement = connection.createStatement();
+//                ResultSet resultSet = statement.executeQuery("""
+//                        select t.*,m.* from show_time as st
+//                        join movies m on st.movie_id = m.id
+//                        join theatres t on st.theatre_id = t.id group by m.id,t.id order by t.id;
+//                        """);) {
+//            if(resultSet.next()){
+//                theatre=new Theatre(
+//                        resultSet.getLong("id"),
+//                        resultSet.getString("name"),
+//                        resultSet.getString("location")
+//                );
+//            }
+//            while (resultSet.next()){
+//                movies.add(new Movie(
+//                        resultSet.getLong("id"),
+//                        resultSet.getString("title"),
+//                        resultSet.getString("genre"),
+//                        resultSet.getInt("duration")
+//                ));
+//
+//            }
+//            map.put(theatre,movies);
+//            list.add(map);
+//
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return list;
         List<Movie> movies = new ArrayList<>();
         Theatre theatre = new Theatre();
         Map<Theatre, List<Movie>> map = new HashMap<>();
@@ -127,34 +162,31 @@ public class ShowTimeDaoImpl implements ShowTimeDao {
         try (
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("""
-                                     select t.*,m.* from show_time as st
-                                      join movies m on st.movie_id = m.id
-                                      join theatres t on st.theatre_id = t.id group by m.id,t.id;
-                                
-                        """);) {
+                        select t.*,m.* from show_time as st
+                        join movies m on st.movie_id = m.id
+                        join theatres t on st.theatre_id = t.id group by t.id,m.id order by t.id;
+                        """);){
             while (resultSet.next()){
+                theatre=new Theatre(
+                        resultSet.getLong("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("location")
+                );
+                movies=map.getOrDefault(theatre,new ArrayList<>());
                 movies.add(new Movie(
                         resultSet.getLong("id"),
                         resultSet.getString("title"),
                         resultSet.getString("genre"),
                         resultSet.getInt("duration")
                 ));
-                theatre=new Theatre(
-                        resultSet.getLong("id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("location")
-                );
                 map.put(theatre,movies);
-                list.add(map);
             }
-
-
-        } catch (SQLException e) {
+            list.add(map);
+        } catch (SQLException e){
             throw new RuntimeException(e);
         }
         return list;
     }
-
     public ShowTime getShowTimeFindStartAndEnd(LocalDateTime start_time, LocalDateTime end_time) {
         ShowTime showTime = new ShowTime();
         PreparedStatement StatementShowTime = null;

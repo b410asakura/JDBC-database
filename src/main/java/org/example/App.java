@@ -21,7 +21,6 @@ public class App {
         UserService userService=new UserServiceImpl();
         BookingService bookingService=new BookingServiceImpl();
 
-
 //        System.out.println(movieService.createMovie(
 //                "bookings",
 //                List.of(
@@ -44,7 +43,6 @@ public class App {
                     |4-get movies by genre             |26-update user                        |12-get all bookings      |17-find showtime by id            |23-delete theatre by id
                     |5-sort by duration                |27-delete user                        |13-get booking by user id|18-deleteShowTimeByStartAndEndTime|24-get all movies by time 
                     |6-getMoviesByTheaterIdAndStartTime|                                      |                         |19-getMoviesGroupByTheater        |
-                    
                     """);
             switch (new Scanner(System.in).nextLine()) {
                 case "1" -> {                                      //done
@@ -94,16 +92,18 @@ public class App {
                     Long id=scannerNum.nextLong();
                     bookingService.findById(id);
                 }
-                case "11"->{
+                case "11"->{                //done
                     System.out.println("Input booking id you want to delete: ");
                     Long id=scannerNum.nextLong();
                     bookingService.deleteBookingById(id);
                 }
-                case "12"->{
-                    bookingService.getAllBookings();
+                case "12"->bookingService.getAllBookings(); //done
+                case "13"->{                                //done
+                    System.out.println("Input user id to get booking: ");
+                    Long userId=scannerNum.nextLong();
+                    bookingService.getBookingByUserId(userId);
                 }
-
-                case "14" -> {                                                              //done
+                case "14" -> {                                                             //done
                     String save = showTimeService.save(new ShowTime(1L, 3L,
                             LocalDateTime.of(2024, 10, 4, 13, 40, 0),
                             LocalDateTime.of(2024, 9, 4, 16, 00, 0)
@@ -126,18 +126,14 @@ public class App {
                     Long showTimeId=scannerNum.nextLong();
                     System.out.println(showTimeService.findById(showTimeId));
                 }
-                case "18"->{                         //done
+                case "18"->{                            //done
                     System.out.println(showTimeService.deleteShowTimeByStartAndEndTime(
                             LocalDateTime.of(2024, 10, 4, 13, 40, 0),
                             LocalDateTime.of(2024, 9, 4, 16, 0, 0)
                     ));
                 }
-                case "19"->{
-                    showTimeService.getMoviesGroupByTheater().forEach(System.out::println);
-
-                }
-
-                case "20" -> {                                          //20-23done
+                case "19"-> showTimeService.getMoviesGroupByTheater().forEach(System.out::println);//done
+                case "20" -> {                                          //20-24done
                     System.out.println("Input a name of a theatre: ");
                     String name=scannerWord.nextLine();
                     System.out.println("Input location of theatre: ");
@@ -175,14 +171,13 @@ public class App {
                     System.out.println("Input email: ");
                     String email = scannerWord.nextLine();
                     System.out.println(userService.saveUser(new User(userName, password, email)));
-
                 }
                 case "8"->{             //done
                     System.out.println("Input user's email to check for existing: ");
                     String email=scannerWord.nextLine();
                     System.out.println(userService.existsByEmail(email));
-
                 }
+
                 case "25"->userService.getAllUsers().forEach(System.out::println);//done
                 case "26"->{                //done
                     System.out.println("Input user's id you want to update:");
@@ -200,15 +195,7 @@ public class App {
                     String name=scannerWord.nextLine();
                     userService.deleteUser(name);
                 }
-
-
-
-
-
             }
         }
-
-
     }
 }
-

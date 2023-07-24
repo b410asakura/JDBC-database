@@ -11,4 +11,6 @@ public interface BookingService {
     void deleteBookingById(Long id);
 
     void getAllBookings();
+
+    void getBookingByUserId(Long userId);
 }

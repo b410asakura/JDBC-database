@@ -13,4 +13,5 @@ public interface BookingDao {
 
     List<Booking> getAllBookings();
 
+    List<Booking> getBookingByUserId(Long userId);
 }

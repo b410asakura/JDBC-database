@@ -79,9 +79,7 @@ public class BookingDaoImpl implements BookingDao {
              ResultSet resultSet = statement.executeQuery("""
                      select * from bookings
                      """);) {
-            if(!(resultSet.next())){
-                throw new RuntimeException("Not found!");
-            }else{
+            while(resultSet.next()){
                 bookings.add(new Booking(
                         resultSet.getLong("id"),
                         resultSet.getLong("show_time_id"),
@@ -93,6 +91,29 @@ public class BookingDaoImpl implements BookingDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return bookings;
+    }
+
+    @Override
+    public List<Booking> getBookingByUserId(Long userId) {
+        List<Booking>bookings=new ArrayList<>();
+       try( PreparedStatement preparedStatement = connection.prepareStatement("""
+                                select * from bookings where user_id=?
+                """);){
+           preparedStatement.setLong(1,userId);
+           ResultSet resultSet = preparedStatement.executeQuery();
+           while (resultSet.next()){
+               bookings.add(new Booking(
+                       resultSet.getLong("id"),
+                       resultSet.getLong("show_time_id"),
+                       resultSet.getLong("user_id"),
+                       resultSet.getInt("number_of_tickets"),
+                       resultSet.getTimestamp("booking_time").toLocalDateTime())
+               );
+           }
+       }catch (SQLException e){
+           throw new RuntimeException("not found user id!");
+       }
         return bookings;
     }
 }

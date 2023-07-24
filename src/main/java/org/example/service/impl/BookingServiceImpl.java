@@ -29,4 +29,9 @@ public class BookingServiceImpl implements BookingService {
         bookingDao.getAllBookings().forEach(System.out::println);
     }
 
+    @Override
+    public void getBookingByUserId(Long userId) {
+        bookingDao.getBookingByUserId(userId).forEach(System.out::println);
+    }
+
 }
