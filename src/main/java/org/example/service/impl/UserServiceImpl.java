@@ -2,6 +2,7 @@ package org.example.service.impl;
 
 import org.example.dao.UserDao;
 import org.example.dao.impl.UserDaoImpl;
+import org.example.model.Booking;
 import org.example.model.User;
 import org.example.service.UserService;
 
@@ -9,6 +10,12 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
     UserDao userDao=new UserDaoImpl();
+
+    @Override
+    public void createTable() {
+        userDao.createTable();
+    }
+
     @Override
     public List<User> getAllUsers() {
         return userDao.getAllUsers() ;
@@ -34,4 +41,11 @@ public class UserServiceImpl implements UserService {
     public boolean existsByEmail(String email) {
         return userDao.existsByEmail(email);
     }
+
+    @Override
+    public User getById(Long id) {
+        return userDao.getById(id);
+    }
+
+
 }

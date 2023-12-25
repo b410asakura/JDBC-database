@@ -2,13 +2,12 @@ package org.example.dao;
 
 import org.example.model.Movie;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 public interface MovieDao {
-    void createTable(String tableName, List<String> columns);
+    void createTable();
 
     void save(Movie movie);
 
@@ -20,4 +19,10 @@ public interface MovieDao {
     List<Movie> getMoviesByTheaterIdAndStartTime(Long theatreId, LocalDateTime startTime);
 
     Map<String, List<Movie>> getMoviesByGenre(String genre);
+
+    List<Movie> getAll();
+
+    void update(Long id, Movie movie);
+
+    void delete(Long id);
 }

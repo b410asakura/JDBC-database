@@ -14,6 +14,11 @@ public class TheatreServiceImpl implements TheatreService {
     TheatreDao theatreDao=new TheatreDaoImpl();
 
     @Override
+    public void createTable() {
+        theatreDao.createTable();
+    }
+
+    @Override
     public String saveTheatre(Theatre theatre) {
         theatreDao.saveTheatre(theatre);
         return "Theatre is successfully saved!";
@@ -36,7 +41,12 @@ public class TheatreServiceImpl implements TheatreService {
     }
 
     @Override
-    public List<Map<Movie, List<Theatre>>> getAllMoviesByTime(int hours) {
+    public List<Map<Movie, List<Theatre>>> getAllMoviesByTime(String hours) {
         return theatreDao.getAllMoviesByTime(hours);
+    }
+
+    @Override
+    public Theatre findById(Long theatreId) {
+        return theatreDao.findById(theatreId);
     }
 }

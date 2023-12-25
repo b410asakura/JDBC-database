@@ -9,6 +9,11 @@ public class BookingServiceImpl implements BookingService {
     BookingDao bookingDao = new BookingDaoImpl();
 
     @Override
+    public void createTable() {
+        bookingDao.createTable();
+    }
+
+    @Override
     public String saveBooking(Booking booking) {
         bookingDao.saveBooking(booking);
         return "Successfully saved new booking!";
@@ -32,6 +37,11 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public void getBookingByUserId(Long userId) {
         bookingDao.getBookingByUserId(userId).forEach(System.out::println);
+    }
+
+    @Override
+    public void updateBooking(Long id, Booking booking) {
+        bookingDao.update(id, booking);
     }
 
 }

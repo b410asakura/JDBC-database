@@ -15,6 +15,24 @@ public class TheatreDaoImpl implements TheatreDao {
     private final Connection connection = JdbcConfig.getConnection();
 
     @Override
+    public void createTable() {
+        String sql = """   
+                CREATE TABLE theatres (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL,
+                    location VARCHAR(255) NOT NULL
+                )""";
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("table theatres created");
+    }
+
+    @Override
     public Theatre findById(Long theatreId) {
         Theatre theatre = new Theatre();
         try {
@@ -103,7 +121,7 @@ public class TheatreDaoImpl implements TheatreDao {
     }
 
     @Override
-    public List<Map<Movie, List<Theatre>>> getAllMoviesByTime(int hours) {
+    public List<Map<Movie, List<Theatre>>> getAllMoviesByTime(String hours) {
         // параметирден канча саат берсек.
         // Кинолордун узундугу ошол саатка барабар болгон бардык
         // кинолорду жана театырларын чыгарышы керек!
@@ -117,14 +135,14 @@ public class TheatreDaoImpl implements TheatreDao {
                 join theatres t on show_time.theatre_id = t.id
                 where duration=?;                    
                 """)) {
-            preparedStatement.setInt(1, hours);
+            preparedStatement.setString(1, hours);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 movie = new Movie(
                         resultSet.getLong("id"),
                         resultSet.getString("title"),
                         resultSet.getString("genre"),
-                        resultSet.getInt("duration")
+                        resultSet.getString("duration")
                 );
                 theatres = new ArrayList<>(List.of(new Theatre(
                         resultSet.getLong("id"),

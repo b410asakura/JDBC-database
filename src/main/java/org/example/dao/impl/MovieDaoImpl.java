@@ -5,7 +5,6 @@ import org.example.dao.MovieDao;
 import org.example.model.Movie;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,24 +15,22 @@ public class MovieDaoImpl implements MovieDao {
     private final Connection connection = JdbcConfig.getConnection();
 
     @Override
-    public void createTable(String tableName, List<String> columns) {
-        StringBuilder stringBuilder =
-                new StringBuilder(String.format("create table %s (", tableName));
+    public void createTable() {
+        String sql = """
+                                    CREATE TABLE movies (
+                                    id SERIAL PRIMARY KEY,
+                                    title VARCHAR(255) NOT NULL,
+                                    genre VARCHAR(255) NOT NULL,
+                                    duration VARCHAR(50) NOT NULL)
+                                    """;
         try {
             Statement statement = connection.createStatement();
-            for (int i = 0; i < columns.size(); i++) {
-                stringBuilder.append(columns.get(i));
-                if (i < columns.size() - 1) {
-                    stringBuilder.append(",");
-                }
-            }
-            stringBuilder.append(")");
-            statement.executeUpdate(stringBuilder.toString());
+            statement.executeUpdate(sql);
             statement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
+        System.out.println("table movies created");
     }
 
     @Override
@@ -47,7 +44,7 @@ public class MovieDaoImpl implements MovieDao {
 
             preparedStatement.setString(1, movie.getTitle());
             preparedStatement.setString(2, movie.getGenre());
-            preparedStatement.setInt(3, movie.getDuration());
+            preparedStatement.setString(3, movie.getDuration());
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -71,7 +68,7 @@ public class MovieDaoImpl implements MovieDao {
                 movie.setId(resultSet.getLong("id"));
                 movie.setTitle(resultSet.getString("title"));
                 movie.setGenre(resultSet.getString("genre"));
-                movie.setDuration(resultSet.getInt("duration"));
+                movie.setDuration(resultSet.getString("duration"));
 
             }
         } catch (SQLException e) {
@@ -95,7 +92,7 @@ public class MovieDaoImpl implements MovieDao {
                         new Movie(resultSet.getLong("id"),
                                 resultSet.getString("title"),
                                 resultSet.getString("genre"),
-                                resultSet.getInt("duration")));
+                                resultSet.getString("duration")));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -121,7 +118,7 @@ public class MovieDaoImpl implements MovieDao {
                         resultSet.getLong("id"),
                         resultSet.getString("title"),
                         resultSet.getString("genre"),
-                        resultSet.getInt("duration")
+                        resultSet.getString("duration")
                 ));
             }
             resultSet.close();
@@ -148,7 +145,7 @@ public class MovieDaoImpl implements MovieDao {
                         resultSet.getLong("id"),
                         resultSet.getString("title"),
                         resultSet.getString("genre"),
-                        resultSet.getInt("duration")
+                        resultSet.getString("duration")
                 ));
             }
         } catch (SQLException e) {
@@ -171,7 +168,7 @@ public class MovieDaoImpl implements MovieDao {
                        resultSet.getLong("id"),
                        resultSet.getString("title"),
                        resultSet.getString("genre"),
-                       resultSet.getInt("duration")
+                       resultSet.getString("duration")
                ));
            }
            map.put(genre,movies);
@@ -179,6 +176,57 @@ public class MovieDaoImpl implements MovieDao {
            throw new RuntimeException(e);
        }
         return map;
+    }
+
+    @Override
+    public List<Movie> getAll() {
+        List<Movie> movies = new ArrayList<>();
+        try (
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("""
+                                        select * from movies
+                        """)) {
+            while (resultSet.next()) {
+                movies.add(new Movie(
+                        resultSet.getLong("id"),
+                        resultSet.getString("title"),
+                        resultSet.getString("genre"),
+                        resultSet.getString("duration")
+                ));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return movies;
+    }
+
+    @Override
+    public void update(Long id, Movie movie) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("""
+                                update movies set title=?,genre=?, duration = ? where id=?
+                """);) {
+            preparedStatement.setString(1, movie.getTitle());
+            preparedStatement.setString(2, movie.getGenre());
+            preparedStatement.setString(3, movie.getDuration());
+            preparedStatement.setLong(4, id);
+            preparedStatement.executeUpdate();
+            System.out.println("Successfully updated movie with id=" + id);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void delete(Long id) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("""
+                                delete from movies where id=?
+                """);) {
+            preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println( "Successfully deleted movie with id " + id);
     }
 }
 

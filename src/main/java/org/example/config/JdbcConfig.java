@@ -9,9 +9,9 @@ public class JdbcConfig {
         Connection connection;
         try {
             connection = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/movie",
+                    "jdbc:postgresql://localhost:5432/final-2023-database",
                     "postgres",
-                    "postgres"
+                    "57206700"
             );
         } catch (SQLException e) {
             throw new RuntimeException(e);

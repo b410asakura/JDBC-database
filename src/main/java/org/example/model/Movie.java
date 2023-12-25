@@ -4,19 +4,19 @@ public class Movie {
     private Long id;
     private String title;
     private String genre;
-    private int duration;
+    private String duration;
 
     public Movie() {
     }
 
-    public Movie(Long id, String title, String genre, int duration) {
+    public Movie(Long id, String title, String genre, String duration) {
         this.id = id;
         this.title = title;
         this.genre = genre;
         this.duration = duration;
     }
 
-    public Movie(String title, String genre, int duration) {
+    public Movie(String title, String genre, String duration) {
         this.title = title;
         this.genre = genre;
         this.duration = duration;
@@ -46,11 +46,11 @@ public class Movie {
         this.genre = genre;
     }
 
-    public int getDuration() {
+    public String getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(String duration) {
         this.duration = duration;
     }
 

@@ -18,152 +18,86 @@ public class App {
         MovieService movieService = new MovieServiceImpl();
         TheatreService theatreService = new TheatreServiceImpl();
         ShowTimeService showTimeService = new ShowTimeServiceImpl();
-        UserService userService=new UserServiceImpl();
-        BookingService bookingService=new BookingServiceImpl();
-
-//        System.out.println(movieService.createMovie(
-//                "bookings",
-//                List.of(
-//                        "id serial primary key",
-//                        "show_time_id int references show_time(id),"+
-//                        "user_id int references users(id)," +
-//                                "number_of_tickets int not null," +
-//                                "booking_time timestamp")
-//        ));
+        UserService userService = new UserServiceImpl();
+        BookingService bookingService = new BookingServiceImpl();
         Scanner scannerNum = new Scanner(System.in);
         Scanner scannerWord = new Scanner(System.in);
 
+        ShowTime showTime = new ShowTime();
+        System.out.println(showTime.getId());
+        System.out.println();
+
         while (true) {
             System.out.println("""
-                    \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t~~~~~~~Choose operation~~~~~~~
-                    Movie                              | User                                 |Booking                  |Show-time                         |Theatre                  
-                    |1-save movie                      |7-save user                           |9-save booking           |14-save show_time                 |20-save theatre
-                    |2-find movie by id                |8-check if exist user with given email|10-find booking by id    |15-assign showtime                |21-get all theatres
-                    |3-search movie by name            |25-get all users                      |11-delete booking        |16-get all showtime               |22-update theatre by id
-                    |4-get movies by genre             |26-update user                        |12-get all bookings      |17-find showtime by id            |23-delete theatre by id
-                    |5-sort by duration                |27-delete user                        |13-get booking by user id|18-deleteShowTimeByStartAndEndTime|24-get all movies by time 
-                    |6-getMoviesByTheaterIdAndStartTime|                                      |                         |19-getMoviesGroupByTheater        |
+                    \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t~~~~~~~Choose operation~~~~~~~
+                    Movie                                              User                                                                   Booking                                              Show-time                                    Theatre        
+                    |1-create table                          |2-create table                                               |3-create table                                   |4-create table                           |5-create table
+                    |1.1-save movie                           |2.1-save user                                                  |3.1-save booking                                |4.1-save showtime                      |5.1-save theatre
+                    |1.2-get all movies                     |2.2-get all users                                             |3.2-get all bookings                           |4.2-get all show times               |5.2-get all theatres
+                    |1.3-find movie by id                 |2.3=find user by id                                         |3.3-find booking by user id               |4.3-find show time by id           |5.3-find by theatre id
+                    |1.4-update movie                      |2.4-update user                                              |3.4-update booking                           |4.4-update show time                |5.4-update theatre
+                    |1.5-delete movie                       |2.5-delete user                                              |3.5-delete booking                            |4.5-delete show time                 |5.5-delete theatre
+                    |1.6-search movie by name        |2.6-check if exist user with given email       |3.6-get booking by user id               |4.6-get all movies in theatre      |5.6-get all movies by time 
+                    |1.7-get movies by genre                                                                                                                                                                      
+                    |1.8-getMovies                                                                                                                                                                                      
+                    ByTheaterIdAndStartTime                                                                                                                                                                
                     """);
             switch (new Scanner(System.in).nextLine()) {
-                case "1" -> {                                      //done
+                case "1" -> {
+                    movieService.createTable();
+                }
+                case "1.1" -> {
                     System.out.println("Write title");
                     String title = scannerWord.nextLine();
                     System.out.println("Write genre");
                     String genre = scannerWord.nextLine();
-                    System.out.println("Write duration");
-                    int duration = scannerNum.nextInt();
+                    System.out.println("Write duration (integer only)");
+                    String duration = scannerWord.nextLine();
                     System.out.println(movieService.saveMovie(new Movie(title, genre, duration)));
                 }
-                case "2" -> {                                       //done
+                case "1.2" -> {
+                   movieService.getAll().forEach(System.out::println);
+                }
+                case "1.3" -> {
                     System.out.println("Write id of a movie you want to find: ");
                     System.out.println(movieService.findMovieById(scannerNum.nextLong()));
                 }
-                case "3"->{                                         //done
+                case "1.4" -> {
+                    System.out.println("Input movie's id you want to update:");
+                    Long id = scannerNum.nextLong();
+                    System.out.println("Input new movie's title: ");
+                    String title = scannerWord.nextLine();
+                    System.out.println("Input new movie's genre: ");
+                    String genre = scannerWord.nextLine();
+                    System.out.println("Input new movie's duration: ");
+                    String duration = scannerWord.nextLine();
+                    movieService.update(id, new Movie(title, genre, duration));
+                    System.out.println("Movie was updated");
+                }
+                case "1.5" -> {
+                    System.out.println("Input movie's id you want to delete:");
+                    Long id = scannerNum.nextLong();
+                    movieService.delete(id);
+                }
+                case "1.6" -> {
                     System.out.println("Input movie name(title) you want to search:");
-                    String title=scannerWord.nextLine();
+                    String title = scannerWord.nextLine();
                     movieService.searchByName(title).forEach(System.out::println);
                 }
-                case "4"->{                                             //done
+                case "1.7" -> {
                     System.out.println("Input genre you want to get movies by");
-                    String genre=scannerWord.nextLine();
+                    String genre = scannerWord.nextLine();
                     System.out.println(movieService.getMoviesByGenre(genre));
                 }
-                case "5"->{                                         //done
-                    System.out.println("Input asc or desc depending on what way you want to sort!");
-                    String ascOrDesc=scannerWord.nextLine();
-                    movieService.sortByDuration(ascOrDesc).forEach(System.out::println);
-                }
-                case "6"->{                                     //done
+                case "1.8" -> {
                     movieService.getMoviesByTheaterIdAndStartTime(3L,
-                            LocalDateTime.of(2023, 7,20,18,30,0))
+                                    LocalDateTime.of(2023, 7, 20, 18, 30, 0))
                             .forEach(System.out::println);
                 }
-                case "9"->{             //done
-                    System.out.println("Input show_time_id: ");
-                    Long showTimeId=scannerNum.nextLong();
-                    System.out.println("Input userId: ");
-                    Long userId=scannerNum.nextLong();
-                    System.out.println("Input number of tickets: ");
-                    int numberOfTickets=scannerNum.nextInt();
-                    System.out.println(bookingService.saveBooking(new Booking(showTimeId, userId, numberOfTickets)));
+                case "2" -> {
+                    userService.createTable();
                 }
-                case "10"->{                //done
-                    System.out.println("Input booking id: ");
-                    Long id=scannerNum.nextLong();
-                    bookingService.findById(id);
-                }
-                case "11"->{                //done
-                    System.out.println("Input booking id you want to delete: ");
-                    Long id=scannerNum.nextLong();
-                    bookingService.deleteBookingById(id);
-                }
-                case "12"->bookingService.getAllBookings(); //done
-                case "13"->{                                //done
-                    System.out.println("Input user id to get booking: ");
-                    Long userId=scannerNum.nextLong();
-                    bookingService.getBookingByUserId(userId);
-                }
-                case "14" -> {                                                             //done
-                    String save = showTimeService.save(new ShowTime(1L, 3L,
-                            LocalDateTime.of(2024, 10, 4, 13, 40, 0),
-                            LocalDateTime.of(2024, 9, 4, 16, 00, 0)
-                    ));
-                    System.out.println(save);
-                }
-                case "15" -> {                                                      //done
-//                    System.out.println("Input show time id: ");
-//                    Long showTimeId=scannerNum.nextLong();
-//                    System.out.println("Input movie id: ");
-//                    Long movieId=scannerNum.nextLong();
-//                    System.out.println("Input theatre id: ");
-//                    Long theatreId=scannerNum.nextLong();
-//                    showTimeService.assign(showTimeId,movieId,theatreId);
-                    showTimeService.assign(1L, 2L, 3L);
-                }
-                case "16"->showTimeService.getAll().forEach(System.out::println);   //done
-                case "17"->{                                                        //done
-                    System.out.println("Input show_time id you want to find:");
-                    Long showTimeId=scannerNum.nextLong();
-                    System.out.println(showTimeService.findById(showTimeId));
-                }
-                case "18"->{                            //done
-                    System.out.println(showTimeService.deleteShowTimeByStartAndEndTime(
-                            LocalDateTime.of(2024, 10, 4, 13, 40, 0),
-                            LocalDateTime.of(2024, 9, 4, 16, 0, 0)
-                    ));
-                }
-                case "19"-> showTimeService.getMoviesGroupByTheater().forEach(System.out::println);//done
-                case "20" -> {                                          //20-24done
-                    System.out.println("Input a name of a theatre: ");
-                    String name=scannerWord.nextLine();
-                    System.out.println("Input location of theatre: ");
-                    String location=scannerWord.nextLine();
-                    System.out.println(theatreService.saveTheatre(new Theatre(name, location)));
-                }
-                case "21"->theatreService.getAllTheatres().forEach(System.out::println);
-                case "22"->{
-                    System.out.println("Input old theatre_id you want to update: ");
-                    Long id=scannerNum.nextLong();
-                    System.out.println("Input new theatre's name: ");
-                    String name=scannerWord.nextLine();
-                    System.out.println("Input new theatre's location: ");
-                    String location=scannerWord.nextLine();
-                    theatreService.updateTheatre(id,new Theatre(name,location));
-                }
-                case "23"->{
-                    System.out.println("Input theatre's id you want to delete: ");
-                    Long id=scannerNum.nextLong();
-                    System.out.println(theatreService.deleteTheatre(id));
-                }
-                case "24"->{
-                    // параметирден канча саат берсек.
-                    // Кинолордун узундугу ошол саатка барабар болгон бардык
-                    // кинолорду жана театырларын чыгарышы керек!
-                    System.out.println("Input duration in hours: ");
-                    int hours=scannerNum.nextInt();
-                    theatreService.getAllMoviesByTime(hours).forEach(System.out::println);
-                }
-                case "7"-> {         //done
+                case "2.1" -> {
                     System.out.println("Input username: ");
                     String userName = scannerWord.nextLine();
                     System.out.println("Input password: ");
@@ -172,28 +106,158 @@ public class App {
                     String email = scannerWord.nextLine();
                     System.out.println(userService.saveUser(new User(userName, password, email)));
                 }
-                case "8"->{             //done
+                case "2.2" ->{
+                    userService.getAllUsers().forEach(System.out::println);
+                }
+                case "2.3" -> {
+                    System.out.println("Input user's id you want to get");
+                    System.out.println(userService.getById(scannerNum.nextLong()));
+                }
+                case "2.4" -> {
+                    System.out.println("Input user's id you want to update:");
+                    Long id = scannerNum.nextLong();
+                    System.out.println("Input new user's name: ");
+                    String name = scannerWord.nextLine();
+                    System.out.println("Input new user's password: ");
+                    String password = scannerWord.nextLine();
+                    System.out.println("Input new user's email: ");
+                    String email = scannerWord.nextLine();
+                    userService.updateUser(id, new User(name, password, email));
+                }
+                case "2.5" -> {
+                    System.out.println("Input user's name you want to delete:");
+                    String name = scannerWord.nextLine();
+                    userService.deleteUser(name);
+                }
+                case "2.6" -> {
                     System.out.println("Input user's email to check for existing: ");
-                    String email=scannerWord.nextLine();
+                    String email = scannerWord.nextLine();
                     System.out.println(userService.existsByEmail(email));
                 }
-
-                case "25"->userService.getAllUsers().forEach(System.out::println);//done
-                case "26"->{                //done
-                    System.out.println("Input user's id you want to update:");
-                    Long id=scannerNum.nextLong();
-                    System.out.println("Input new user's name: ");
-                    String name=scannerWord.nextLine();
-                    System.out.println("Input new user's password: ");
-                    String password=scannerWord.nextLine();
-                    System.out.println("Input new user's email: ");
-                    String email=scannerWord.nextLine();
-                    userService.updateUser(id,new User(name,password,email));
+                case "3" -> {
+                    bookingService.createTable();
                 }
-                case "27"->{            //done
-                    System.out.println("Input user's name you want to delete:");
-                    String name=scannerWord.nextLine();
-                    userService.deleteUser(name);
+                case "3.1" -> {
+                    System.out.println("Input show_time_id: ");
+                    Long showTimeId = scannerNum.nextLong();
+                    System.out.println("Input userId: ");
+                    Long userId = scannerNum.nextLong();
+                    System.out.println("Input number of tickets: ");
+                    int numberOfTickets = scannerNum.nextInt();
+                    System.out.println("Input booking time");
+                    String bookingTime = scannerWord.next();
+                    System.out.println(bookingService.saveBooking(new Booking(showTimeId, userId, numberOfTickets, bookingTime)));
+                }
+                case "3.2" -> {
+                    bookingService.getAllBookings();
+                }
+                case "3.3" -> {
+                    System.out.println("Input booking id: ");
+                    Long id = scannerNum.nextLong();
+                    bookingService.findById(id);
+                }
+                case "3.4" -> {
+                    System.out.println("Input booking's id you want to update:");
+                    Long id = scannerNum.nextLong();
+                    System.out.println("Input new user id:");
+                    Long userId = scannerNum.nextLong();
+                    System.out.println("Input new show time id:");
+                    Long showTimeId = scannerNum.nextLong();
+                    System.out.println("Input new booking time: ");
+                    String bookingTime = scannerWord.nextLine();
+                    System.out.println("Input new number of tickets");
+                    int numberOfTickets = scannerNum.nextInt();
+                    bookingService.updateBooking(id, new Booking(showTimeId, userId, numberOfTickets, bookingTime));
+                }
+                case "3.5" -> {
+                    System.out.println("Input booking id you want to delete: ");
+                    Long id = scannerNum.nextLong();
+                    bookingService.deleteBookingById(id);
+                }
+                case "3.6" -> {
+                    System.out.println("Input user id to get booking: ");
+                    Long userId = scannerNum.nextLong();
+                    bookingService.getBookingByUserId(userId);
+                }
+                case "4" -> {
+                    showTimeService.createTable();
+                }
+                case "4.1" -> {
+                    System.out.println("Input movie_id: ");
+                    Long movieId = scannerNum.nextLong();
+                    System.out.println("Input theatre_id: ");
+                    Long theatreId = scannerNum.nextLong();
+                    System.out.println("Input start time: ");
+                    String startTime = scannerWord.nextLine();
+                    System.out.println("Input end time: ");
+                    String endTime = scannerWord.nextLine();
+                    System.out.println(showTimeService.save(new ShowTime(movieId, theatreId, startTime, endTime)));
+                }
+                case "4.2" -> {
+                    showTimeService.getAll().forEach(System.out::println);
+                }
+                case "4.3" -> {
+                    System.out.println("Input show_time id you want to find:");
+                    Long showTimeId = scannerNum.nextLong();
+                    System.out.println(showTimeService.findById(showTimeId));
+                }
+                case "4.4" -> {
+                    System.out.println("Input show time id: ");
+                    Long showTimeId=scannerNum.nextLong();
+                    System.out.println("Input movie id: ");
+                    Long movieId=scannerNum.nextLong();
+                    System.out.println("Input theatre id: ");
+                    Long theatreId=scannerNum.nextLong();
+                    System.out.println("Input new start time");
+                    String startTime = scannerNum.next();
+                    System.out.println("Input end start time");
+                    String endTime = scannerNum.next();
+                    showTimeService.update(showTimeId, new ShowTime(movieId, theatreId, startTime, endTime));
+                }
+                case "4.5" -> {
+                    System.out.println("Input show time id: you want to delete ");
+                    Long showTimeId=scannerNum.nextLong();
+                    System.out.println(showTimeService.deleteShowTime(showTimeId));
+                }
+                case "4.6" -> {
+                    showTimeService.getMoviesGroupByTheater().forEach(System.out::println);//done
+                }
+                case "5" -> {
+                    theatreService.createTable();
+                }
+                case "5.1" -> {
+                    System.out.println("Input a name of a theatre: ");
+                    String name = scannerWord.nextLine();
+                    System.out.println("Input location of theatre: ");
+                    String location = scannerWord.nextLine();
+                    System.out.println(theatreService.saveTheatre(new Theatre(name, location)));
+                }
+                case "5.2" -> {
+                    theatreService.getAllTheatres().forEach(System.out::println);
+                }
+                case "5.3" -> {
+                    System.out.println("Input theatre's id you want to get: ");
+                    Long theatreId = scannerNum.nextLong();
+                    System.out.println(theatreService.findById(theatreId));
+                }
+                case "5.4" -> {
+                    System.out.println("Input old theatre_id you want to update: ");
+                    Long id = scannerNum.nextLong();
+                    System.out.println("Input new theatre's name: ");
+                    String name = scannerWord.nextLine();
+                    System.out.println("Input new theatre's location: ");
+                    String location = scannerWord.nextLine();
+                    theatreService.updateTheatre(id, new Theatre(name, location));
+                }
+                case "5.5" -> {
+                    System.out.println("Input theatre's id you want to delete: ");
+                    Long id = scannerNum.nextLong();
+                    System.out.println(theatreService.deleteTheatre(id));
+                }
+                case "5.6" -> {
+                    System.out.println("Input duration in minutes: ");
+                    String hours = scannerNum.nextLine();
+                    theatreService.getAllMoviesByTime(hours).forEach(System.out::println);
                 }
             }
         }

@@ -4,21 +4,20 @@ import org.example.model.Movie;
 import org.example.model.ShowTime;
 import org.example.model.Theatre;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 public interface ShowTimeService {
+    void createTable();
     String save(ShowTime showTime);
-
-    String assign(Long showTimeId, Long movieId, Long theatreId);
 
     List<ShowTime> getAll();
 
     ShowTime findById(Long showTimeId);
 
-    String deleteShowTimeByStartAndEndTime(LocalDateTime startTime, LocalDateTime endTime);
+    String deleteShowTime(Long id);
 
     List<Map<Theatre, List<Movie>>> getMoviesGroupByTheater();
 
+    void update(Long showTimeId, ShowTime showTime);
 }

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface TheatreDao {
+
+    void createTable();
     Theatre findById(Long theatreId);
 
     void saveTheatre(Theatre theatre);
@@ -17,5 +19,5 @@ public interface TheatreDao {
 
     void deleteTheatre(Long id);
 
-    List<Map<Movie, List<Theatre>>> getAllMoviesByTime(int hours);
+    List<Map<Movie, List<Theatre>>> getAllMoviesByTime(String hours);
 }

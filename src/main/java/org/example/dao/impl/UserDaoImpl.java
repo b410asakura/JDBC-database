@@ -2,6 +2,7 @@ package org.example.dao.impl;
 
 import org.example.config.JdbcConfig;
 import org.example.dao.UserDao;
+import org.example.model.Movie;
 import org.example.model.User;
 
 import java.sql.*;
@@ -10,6 +11,24 @@ import java.util.List;
 
 public class UserDaoImpl implements UserDao {
     private final Connection connection = JdbcConfig.getConnection();
+
+    @Override
+    public void createTable() {
+        String sql = """
+                CREATE TABLE users (
+                                        id SERIAL PRIMARY KEY,
+                                        username VARCHAR(255) NOT NULL,
+                                        password VARCHAR(255) NOT NULL,
+                                        email VARCHAR(255) NOT NULL) """;
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("table users created");
+    }
 
     @Override
     public List<User> getAllUsers() {
@@ -52,7 +71,7 @@ public class UserDaoImpl implements UserDao {
     public String updateUser(Long id, User user) {
         try (PreparedStatement preparedStatement = connection.prepareStatement("""
                                 update users set user_name=?,password=?,email=? where id=?
-                """);) {
+                """)) {
             preparedStatement.setString(1, user.getUserName());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setString(3, user.getEmail());
@@ -91,5 +110,30 @@ public class UserDaoImpl implements UserDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public User getById(Long id) {
+        User user = new User();
+        try {
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement("""
+                                            select * from users where id=?
+                            """);
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (!(resultSet.next())) {
+                throw new RuntimeException("User with id :" + id + " not found!");
+            } else {
+                user.setId(resultSet.getLong("id"));
+                user.setUserName(resultSet.getString("user_name"));
+                user.setEmail(resultSet.getString("email"));
+                user.setPassword(resultSet.getString("password"));
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return user;
     }
 }

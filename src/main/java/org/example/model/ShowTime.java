@@ -6,12 +6,12 @@ public class ShowTime {
     private Long id;
     private Long movieId;
     private Long theatreId;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private String startTime;
+    private String endTime;
 
     public ShowTime() {
     }
-    public ShowTime(Long id, Long movieId, Long theatreId, LocalDateTime startTime, LocalDateTime endTime) {
+    public ShowTime(Long id, Long movieId, Long theatreId, String startTime, String endTime) {
         this.id = id;
         this.movieId = movieId;
         this.theatreId = theatreId;
@@ -19,14 +19,14 @@ public class ShowTime {
         this.endTime = endTime;
     }
 
-    public ShowTime(Long movieId, Long theatreId, LocalDateTime startTime, LocalDateTime endTime) {
+    public ShowTime(Long movieId, Long theatreId, String startTime, String endTime) {
         this.movieId = movieId;
         this.theatreId = theatreId;
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    public ShowTime(LocalDateTime startTime, LocalDateTime endTime) {
+    public ShowTime(String startTime, String endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -56,19 +56,19 @@ public class ShowTime {
         this.theatreId = theatreId;
     }
 
-    public LocalDateTime getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(String    endTime) {
         this.endTime = endTime;
     }
 

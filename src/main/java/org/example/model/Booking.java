@@ -7,12 +7,12 @@ public class Booking {
     private Long showTimeId;
     private Long userId;
     private int numberOfTickets;
-    private LocalDateTime bookingTime;
+    private String bookingTime;
 
     public Booking() {
     }
 
-    public Booking(Long id, Long showTimeId, Long userId, int numberOfTickets, LocalDateTime bookingTime) {
+    public Booking(Long id, Long showTimeId, Long userId, int numberOfTickets, String bookingTime) {
         this.id = id;
         this.showTimeId = showTimeId;
         this.userId = userId;
@@ -20,7 +20,7 @@ public class Booking {
         this.bookingTime = bookingTime;
     }
 
-    public Booking(Long showTimeId, Long userId, int numberOfTickets, LocalDateTime bookingTime) {
+    public Booking(Long showTimeId, Long userId, int numberOfTickets, String bookingTime) {
         this.showTimeId = showTimeId;
         this.userId = userId;
         this.numberOfTickets = numberOfTickets;
@@ -65,11 +65,11 @@ public class Booking {
         this.numberOfTickets = numberOfTickets;
     }
 
-    public LocalDateTime getBookingTime() {
+    public String getBookingTime() {
         return bookingTime;
     }
 
-    public void setBookingTime(LocalDateTime bookingTime) {
+    public void setBookingTime(String bookingTime) {
         this.bookingTime = bookingTime;
     }
 

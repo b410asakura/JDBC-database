@@ -5,6 +5,8 @@ import org.example.model.User;
 import java.util.List;
 
 public interface UserDao {
+
+    void createTable();
     List<User> getAllUsers();
 
     void saveUser(User user);
@@ -14,4 +16,6 @@ public interface UserDao {
     String deleteUser(String name);
 
     boolean existsByEmail(String email);
+
+    User getById(Long id);
 }
