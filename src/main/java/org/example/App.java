@@ -38,9 +38,7 @@ public class App {
                     |1.4-update movie                      |2.4-update user                                              |3.4-update booking                           |4.4-update show time                |5.4-update theatre
                     |1.5-delete movie                       |2.5-delete user                                              |3.5-delete booking                            |4.5-delete show time                 |5.5-delete theatre
                     |1.6-search movie by name        |2.6-check if exist user with given email       |3.6-get booking by user id               |4.6-get all movies in theatre      |5.6-get all movies by time 
-                    |1.7-get movies by genre                                                                                                                                                                      
-                    |1.8-getMovies                                                                                                                                                                                      
-                    ByTheaterIdAndStartTime                                                                                                                                                                
+                    |1.7-get movies by genre                                                                                                                                                                                                                                                                                                                                     
                     """);
             switch (new Scanner(System.in).nextLine()) {
                 case "1" -> {
@@ -88,11 +86,6 @@ public class App {
                     System.out.println("Input genre you want to get movies by");
                     String genre = scannerWord.nextLine();
                     System.out.println(movieService.getMoviesByGenre(genre));
-                }
-                case "1.8" -> {
-                    movieService.getMoviesByTheaterIdAndStartTime(3L,
-                                    LocalDateTime.of(2023, 7, 20, 18, 30, 0))
-                            .forEach(System.out::println);
                 }
                 case "2" -> {
                     userService.createTable();
